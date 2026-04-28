@@ -20,7 +20,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
     echo "Configuring database and users..."
 
-    mariadb -u root <<-EQSQL
+    mariadb -u root <<-EOSQL
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
         DELETE FROM mysql.user WHERE USER='';
         DROP DATABASE IF EXISTS test;
