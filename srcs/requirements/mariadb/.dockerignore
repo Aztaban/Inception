@@ -1,0 +1,13 @@
+.git
+.gitignore
+.env
+*.env
+secrets
+*.log
+.DS_Store
+
+README.md
+USER_DOC.md
+DEV_DOC.md
+
+docker-compose.yml
