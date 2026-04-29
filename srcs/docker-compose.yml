@@ -24,6 +24,10 @@ services:
     image: wordpress
     env_file:
       - .env
+    secrets:
+      - dp_password
+      - wp_admin_password
+      - wp_user_password
     volumes:
       - wordpress_data:/var/www/html
     networks:
