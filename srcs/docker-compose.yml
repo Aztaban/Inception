@@ -25,7 +25,7 @@ services:
     env_file:
       - .env
     secrets:
-      - dp_password
+      - db_password
       - wp_admin_password
       - wp_user_password
     volumes:
