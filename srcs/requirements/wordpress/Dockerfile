@@ -17,7 +17,7 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
-COPY tools/init/init_wordpress.sh /usr/local/bin/init_wordpress.sh
+COPY tools/init_wordpress.sh /usr/local/bin/init_wordpress.sh
 
 RUN chmod +x /usr/local/bin/init_wordpress.sh
 
