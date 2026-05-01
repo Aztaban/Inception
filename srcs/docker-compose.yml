@@ -50,6 +50,8 @@ services:
       - inception
     ports:
       - "443:443"
+    depends_on:
+      - wordpress
     restart: unless-stopped
 
 volumes:
@@ -58,14 +60,14 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/mjusta/data/mariadb
+      device: ${DATA_PATH}/mariadb
 
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/mjusta/data/wordpress
+      device: ${DATA_PATH}/wordpress
 
 networks:
   inception:
