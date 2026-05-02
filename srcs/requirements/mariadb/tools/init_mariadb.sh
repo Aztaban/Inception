@@ -13,7 +13,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "Initializing MariaDB..."
 	mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking=0 &
+	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
 	pid="$!"
 
 	until mysqladmin ping --silent; do
@@ -30,7 +30,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
 
-	mysqladmin -u root -p"${DB_ROOT_PASSWORD}" shutdown
+	mysqladmin -u root -p"${DB_ROOT_PASSWORD}" shutdown || true
 	wait "$pid" || true
 
 	echo "MariaDB initialized."
