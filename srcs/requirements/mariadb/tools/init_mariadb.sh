@@ -14,7 +14,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 
 	echo "Starting temporary MariaDB server..."
-	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=/run/mysqld/mysqld.sock &
 	MYSQLD_PID="$!"
 
 	until mariadb-admin --socket=/run/mysqld/mysqld.sock ping --silent; do
@@ -24,7 +24,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "Configuring database and users..."
 
 	mariadb --socket=/run/mysqld/mysqld.sock -u root <<-EOSQL
-		ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
+		SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT_PASSWORD}');
 		DELETE FROM mysql.user WHERE User='';
 		DROP DATABASE IF EXISTS test;
 		DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
