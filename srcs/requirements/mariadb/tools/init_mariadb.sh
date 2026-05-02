@@ -2,47 +2,40 @@
 
 set -e
 
-DB_ROOT_PASSWORD="$(cat /run/secrets/db_root_password)"
-DB_PASSWORD="$(cat /run/secrets/db_password)"
+DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+DB_PASSWORD=$(cat /run/secrets/db_password)
 
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 chown -R mysql:mysql /var/lib/mysql
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-	echo "Initializing MariaDB data directory..."
-	mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
+	echo "Initializing MariaDB..."
+	mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-	echo "Starting temporary MariaDB server..."
-	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=/run/mysqld/mysqld.sock &
-	MYSQLD_PID="$!"
+	mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking=0 &
+	pid="$!"
 
-	until mariadb-admin --socket=/run/mysqld/mysqld.sock ping --silent; do
+	until mysqladmin ping --silent; do
 		sleep 1
 	done
 
-	echo "Configuring database and users..."
+	echo "Creating database and users..."
 
-	mariadb --socket=/run/mysqld/mysqld.sock -u root <<-EOSQL
-		SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT_PASSWORD}');
-		DELETE FROM mysql.user WHERE User='';
-		DROP DATABASE IF EXISTS test;
-		DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-		CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
-		CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
-		GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-		FLUSH PRIVILEGES;
-	EOSQL
+	mysql -u root <<EOF
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
+FLUSH PRIVILEGES;
+EOF
 
-	echo "Stopping temporary MariaDB server..."
-	mariadb-admin --socket=/run/mysqld/mysqld.sock -u root -p"${DB_ROOT_PASSWORD}" shutdown
+	mysqladmin -u root -p"${DB_ROOT_PASSWORD}" shutdown
+	wait "$pid" || true
 
-	wait "$MYSQLD_PID" || true
-
-	echo "MariaDB initialization complete."
+	echo "MariaDB initialized."
 else
-	echo "MariaDB data directory already initialized."
+	echo "MariaDB already initialized."
 fi
 
-echo "Starting MariaDB..."
 exec mysqld --user=mysql --datadir=/var/lib/mysql
