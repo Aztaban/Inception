@@ -50,7 +50,7 @@ if [ ! -f "wp-config.php" ]; then
 
 	echo "Creating normal wordpress user..."
 
-	wp_user create \
+	wp user create \
 		"${WP_USER}" \
 		"${WP_USER_EMAIL}" \
 		--allow-root \
