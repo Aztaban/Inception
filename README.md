@@ -404,7 +404,7 @@ Overall, the security approach of this project relies on a few core principles: 
 - [Docker Docs — Storage: volumes and bind mounts](https://docs.docker.com/engine/storage/)
 - [Docker Docs — Compose secrets](https://docs.docker.com/compose/how-tos/use-secrets/)
 - [NGINX Docs — Configuring HTTPS servers](https://nginx.org/en/docs/http/configuring_https_servers.html)
-- [NGINX Docs — `ngx_http_ssl_module`](https://nginx.org/en/docs/http/ngx_http_ssl_module.html)
+- [NGINX Docs — ngx_http_ssl_module](https://nginx.org/en/docs/http/ngx_http_ssl_module.html)
 - [WordPress Developer Docs — NGINX / php-fpm setup notes](https://developer.wordpress.org/advanced-administration/server/web-server/nginx/)
 - [MariaDB Docs — MariaDB in Docker and environment variables](https://mariadb.com/docs/server/server-management/automated-mariadb-deployment-and-administration/docker-and-mariadb/mariadb-server-docker-official-image-environment-variables)
 
