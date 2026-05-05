@@ -7,31 +7,31 @@ Inception is a system administration project from the 42 curriculum focused on b
 ---
 
 ## Table of content
-1. [Description](#description)
-2. [Architecture](#architecture)
-3. [Directory Structure](#directory-structure)
-4. [Design Choices](#design-choices)
-    - [4.1 Virtual Machines vs Docker](#virtual-machines-vs-docker)
-    - [4.2 Secrets vs Environment Variables](#secrets-vs-environment-variables)
-    - [4.3 Docker Network vs Host Network](#docker-network-vs-host-network)
-    - [4.4 Docker Volumes vs Bind Mounts](#docker-volumes-vs-bind-mounts)
-5. [Instructions](#instructions)
-    - [5.1 Prerequisites](#prerequisites)
-    - [5.2 Setup](#setup)
-    - [5.3 Build and Run](#build-and-run)
-    - [5.4 Stop / Clean](#stop--clean)
-    - [5.5 Access](#access)
-    - [5.6 Troubleshooting](#troubleshooting)
-6. [Services](#services)
-    - [6.1 NGINX](#nginx)
-    - [6.2 WordPress + php-fpm](#wordpress--php-fpm)
-    - [6.3 MariaDB](#mariadb)
+1. [Description](#1-description)
+2. [Architecture](#2-architecture)
+3. [Directory Structure](#3-directory-structure)
+4. [Design Choices](#4-design-choices)
+    - [4.1 Virtual Machines vs Docker](#41-virtual-machines-vs-docker)
+    - [4.2 Secrets vs Environment Variables](#42-secrets-vs-environment-variables)
+    - [4.3 Docker Network vs Host Network](#43-docker-network-vs-host-network)
+    - [4.4 Docker Volumes vs Bind Mounts](#44-docker-volumes-vs-bind-mounts)
+5. [Instructions](#5-instructions)
+    - [5.1 Prerequisites](#51-prerequisites)
+    - [5.2 Setup](#52-setup)
+    - [5.3 Build and Run](#53-build-and-run)
+    - [5.4 Stop / Clean](#54-stop--clean)
+    - [5.5 Access](#55-access)
+    - [5.6 Troubleshooting](#56-troubleshooting)
+6. [Services](#6-services)
+    - [6.1 NGINX](#61-nginx)
+    - [6.2 WordPress + php-fpm](#62-wordpress--php-fpm)
+    - [6.3 MariaDB](#63-mariadb)
     - [6.4 Service Interaction](#64-service-interaction)
-7. [Data Persistence](#data-persistence)
-8. [Security Notes](#security-notes)
-9. [Resources](#resources)
-    - [9.1 Official documentation](#official-documentation)
-    - [9.2 How AI was used](#how-ai-was-used)
+7. [Data Persistence](#7-data-persistence)
+8. [Security Notes](#8-security-notes)
+9. [Resources](#9-resources)
+    - [9.1 Official documentation](#91-official-documentation)
+    - [9.2 How AI was used](#92-how-ai-was-used)
 
 ---
 
@@ -396,18 +396,17 @@ Overall, the security approach of this project relies on a few core principles: 
 ## 9. Resources
 
 ### 9.1 Official documentation
-- Docker Docs — Compose overview and application model
-- Docker Docs — Compose file reference
-- Docker Docs — Dockerfile reference
-- Docker Docs — Docker build best practices
-- Docker Docs — Networking
-- Docker Docs — Volumes
-- Docker Docs — Bind mounts
-- Docker Docs — Compose secrets
-- NGINX Docs — Configuring HTTPS servers
-- NGINX Docs — `ngx_http_ssl_module`
-- WordPress Developer Docs — NGINX / php-fpm setup notes
-- MariaDB Docs — MariaDB in Docker and environment variables
+- [Docker Docs — Compose overview](https://docs.docker.com/compose/)
+- [Docker Docs — Compose file reference](https://docs.docker.com/reference/compose-file/)
+- [Docker Docs — Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
+- [Docker Docs — Docker build best practices](https://docs.docker.com/build/building/best-practices/)
+- [Docker Docs — Networking](https://docs.docker.com/engine/network/)
+- [Docker Docs — Storage: volumes and bind mounts](https://docs.docker.com/engine/storage/)
+- [Docker Docs — Compose secrets](https://docs.docker.com/compose/how-tos/use-secrets/)
+- [NGINX Docs — Configuring HTTPS servers](https://nginx.org/en/docs/http/configuring_https_servers.html)
+- [NGINX Docs — `ngx_http_ssl_module`](https://nginx.org/en/docs/http/ngx_http_ssl_module.html)
+- [WordPress Developer Docs — NGINX / php-fpm setup notes](https://developer.wordpress.org/advanced-administration/server/web-server/nginx/)
+- [MariaDB Docs — MariaDB in Docker and environment variables](https://mariadb.com/docs/server/server-management/automated-mariadb-deployment-and-administration/docker-and-mariadb/mariadb-server-docker-official-image-environment-variables)
 
 ---
 
