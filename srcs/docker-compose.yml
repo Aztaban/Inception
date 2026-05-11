@@ -15,7 +15,7 @@ services:
     networks:
       - inception
     restart: unless-stopped
-  
+    
   wordpress:
     container_name: wordpress
     build:
@@ -34,6 +34,7 @@ services:
       - inception
     depends_on:
       - mariadb
+      - redis
     restart: unless-stopped
 
   nginx:
@@ -53,6 +54,16 @@ services:
     depends_on:
       - wordpress
     restart: unless-stopped
+
+  redis:
+    container_name: redis
+    build:
+      context: ./requirements/bonus/redis
+      dockerfile: Dockerfile
+    image: redis
+    restart: unless-stopped
+    networks:
+      - inception
 
 volumes:
   mariadb_data:
