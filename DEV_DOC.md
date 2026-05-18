@@ -6,7 +6,23 @@ This document explains how to set up, build, launch, debug, and maintain the Inc
 
 The project is intended to run inside a Debian-based virtual machine. The host machine should stay minimal: project services are installed inside their own Docker images using the project Dockerfiles.
 
-### Prerequisites
+## Table of Content
+
+1. [Prerequisites](#prerequisites)
+2. [Configuration Files](#configuration-files)
+3. [Secrets Setup](#secrets-setup)
+4. [Persistent Data Directories](#persistent-data-directories)
+5. [Building and Launching the Project](#building-and-launching-the-project)
+6. [Makefile Commands](#makefile-commands)
+7. [Managing Containers Manually](#managing-containers-manually)
+8. [Managing Volumes](#managing-volumes)
+9. [Mandatory Services](#mandatory-services)
+10. [Bonus Services](#bonus-services)
+11. [Testing the Project](#testing-the-project)
+12. [Common Troubleshooting](#common-troubleshooting)
+13. [Development Notes](#development-notes)
+
+## Prerequisites
 
 Install Make, Curl, Docker, and Docker Compose v2:
 
