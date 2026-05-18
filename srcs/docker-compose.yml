@@ -111,6 +111,18 @@ services:
       - wordpress
     restart: unless-stopped
 
+  glances:
+    container_name: glances
+    build:
+      context: ./requirements/bonus/glances
+      dockerfile: Dockerfile
+    image: glances
+    ports:
+      - "61208:61208"
+    networks:
+      - inception
+    restart: unless-stopped
+
 volumes:
   mariadb_data:
     driver: local
