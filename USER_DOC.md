@@ -6,19 +6,53 @@ This document explains how to use the Inception stack as an end user or administ
 
 The project provides a small Docker-based infrastructure running inside a virtual machine. The mandatory stack contains:
 
-- **NGINX** as the only public entrypoint, available through HTTPS on port `443`
+- **NGINX** as the only mandatory public entrypoint, available through HTTPS on port `443`
 - **WordPress** running with PHP-FPM
 - **MariaDB** as the WordPress database
 - **Docker named volumes** for persistent database and website data
 - **A Docker network** used for communication between containers
 
-The project also includes optional bonus services. These services are separate from the mandatory infrastructure.
+The project also includes optional bonus services. These services are separate from the mandatory infrastructure and may expose additional ports when needed.
 
 - **Redis** for WordPress object caching
 - **Adminer** for database inspection
 - **FTP** for access to the WordPress website files
 - **Static website** as an additional independent web service
-- **cAdvisor** for container monitoring
+- **Glances** as a lightweight monitoring service
+
+---
+
+## Prerequisites
+
+Before running the project, install Make, Curl, Docker, and Docker Compose v2:
+
+```bash
+sudo apt update
+sudo apt install -y make curl
+curl -fsSL https://get.docker.com | sh
+```
+
+Check the installation:
+
+```bash
+docker --version
+docker compose version
+make --version
+```
+
+This project uses Docker Compose v2, so commands use:
+
+```bash
+docker compose
+```
+
+not the older standalone command:
+
+```bash
+docker-compose
+```
+
+If Docker commands require root permissions, either use `sudo` before Docker commands or add your user to the `docker` group according to your VM setup.
 
 ---
 
@@ -26,7 +60,7 @@ The project also includes optional bonus services. These services are separate f
 
 ### NGINX
 
-NGINX is the public entrypoint of the infrastructure.
+NGINX is the public entrypoint of the mandatory infrastructure.
 
 It listens on:
 
@@ -34,7 +68,7 @@ It listens on:
 https://mjusta.42.fr
 ```
 
-Only port `443` is exposed for the mandatory part. HTTP port `80` is not used.
+Only port `443` is exposed for the mandatory part. HTTP port `80` is not used by the mandatory NGINX service.
 
 NGINX uses TLS and forwards PHP requests to the WordPress container.
 
@@ -51,19 +85,96 @@ MariaDB stores the WordPress database.
 It is not publicly exposed. WordPress connects to MariaDB through the private Docker network.
 
 ### BONUS Redis  
+
 Redis is an in-memory data store used as a caching service for WordPress. It helps reduce repeated database queries by storing frequently requested objects in memory, which can improve the performance and responsiveness of the website.
 
+Redis is an internal service. It does not need to expose a public port because WordPress reaches it through the Docker network using the hostname:
+
+```text
+redis
+```
+
 ### BONUS Adminer  
+
 Adminer is a lightweight database management tool. It provides a web interface for inspecting and managing the MariaDB database, making it easier to check WordPress tables, users, and persisted data during development and administration.
 
+
+Adminer is available at:
+
+```text
+http://localhost:8080
+```
+
+If accessing from the host machine while Docker runs inside a VM, use:
+
+```text
+http://<VM_IP_ADDRESS>:8080
+```
+
+Adminer login values:
+
+```text
+System:   MySQL
+Server:   mariadb
+Username: MYSQL_USER from srcs/.env
+Password: password from secrets/db_password.txt
+Database: MYSQL_DATABASE from srcs/.env
+```
+
+The server must be `mariadb`, not `localhost`, because Adminer connects to MariaDB through the Docker network.
+
 ### BONUS FTP  
+
 The FTP service provides file access to the WordPress website volume. It allows an administrator to upload, download, or inspect WordPress files without entering the container directly.
 
-### BONUS Static website
+FTP uses:
+
+```text
+Port: 21
+Passive ports: 21100-21110
+```
+
+Example FTP login values:
+
+```text
+Host: localhost or <VM_IP_ADDRESS>
+Port: 21
+User: FTP_USER from srcs/.env
+Password: password from secrets/ftp_password.txt
+```
+
+The FTP service points to the WordPress website files volume.
+
+### BONUS Static Website
 The static website is an additional independent web service served from its own container. It can be used as a simple portfolio, project presentation page, or landing page, and demonstrates how the infrastructure can host more than one type of web application.
 
-### BONUS cAdvisor
-cAdvisor is a container monitoring service. It provides information about running containers, including CPU usage, memory usage, network activity, and filesystem usage, which helps with observing and debugging the Docker infrastructure.
+It is available at:
+
+```text
+http://localhost:8081
+```
+
+If accessing from the host machine while Docker runs inside a VM, use:
+
+```text
+http://<VM_IP_ADDRESS>:8081
+```
+
+### BONUS Glances
+
+Glances is a lightweight monitoring service. It provides a web interface for checking system resource usage such as CPU, memory, disk, network, and processes.
+
+It is available at:
+
+```text
+http://localhost:61208
+```
+
+If accessing from the host machine while Docker runs inside a VM, use:
+
+```text
+http://<VM_IP_ADDRESS>:61208
+```
 
 ---
 
@@ -92,15 +203,25 @@ make ps
 or:
 
 ```bash
-docker-compose -f srcs/docker-compose.yml ps
+docker compose -f srcs/docker-compose.yml ps
 ```
 
-Expected mandatory containers:
+Mandatory containers:
 
 ```text
 mariadb
 wordpress
 nginx
+```
+
+Bonus containers if all bonuses are enabled:
+
+```text
+redis
+adminer
+ftp
+static_site
+glances
 ```
 
 ---
@@ -135,7 +256,7 @@ make restart
 
 ## Accessing the Website
 
-The website is available at:
+The WordPress website is available at:
 
 ```text
 https://mjusta.42.fr
@@ -208,6 +329,7 @@ secrets/db_root_password.txt
 secrets/db_password.txt
 secrets/wp_admin_password.txt
 secrets/wp_user_password.txt
+secrets/ftp_password.txt
 ```
 
 These files are used by Docker Compose as Docker secrets and are mounted inside containers under:
@@ -270,6 +392,12 @@ To check the project status through the Makefile:
 make ps
 ```
 
+To check the status directly with Docker Compose v2:
+
+```bash
+docker compose -f srcs/docker-compose.yml ps
+```
+
 ---
 
 ## Viewing Logs
@@ -283,7 +411,7 @@ make logs
 or:
 
 ```bash
-docker-compose -f srcs/docker-compose.yml logs -f
+docker compose -f srcs/docker-compose.yml logs -f
 ```
 
 To view logs for a specific service:
@@ -292,6 +420,11 @@ To view logs for a specific service:
 docker logs mariadb
 docker logs wordpress
 docker logs nginx
+docker logs redis
+docker logs adminer
+docker logs ftp
+docker logs static_site
+docker logs glances
 ```
 
 ---
@@ -335,6 +468,60 @@ docker logs wordpress
 ```
 
 Make sure the database variables in `srcs/.env` match the values used by WordPress and MariaDB.
+
+### WordPress Redis cache does not work
+
+Check Redis logs:
+
+```bash
+docker logs redis
+```
+
+Check Redis from inside the Redis container:
+
+```bash
+docker exec -it redis redis-cli ping
+```
+
+Expected result:
+
+```text
+PONG
+```
+
+Check Redis status from the WordPress container:
+
+```bash
+docker exec -it wordpress wp redis status --allow-root
+```
+
+### Adminer cannot connect to MariaDB
+
+In the Adminer login page, make sure the server field is:
+
+```text
+mariadb
+```
+
+Do not use:
+
+```text
+localhost
+```
+
+`localhost` would point to the Adminer container itself, not to the MariaDB container.
+
+### FTP login works but directory listing hangs
+
+This is usually caused by passive FTP configuration.
+
+Check that the passive ports are exposed:
+
+```text
+21100-21110
+```
+
+If connecting from the host machine to the VM, make sure the FTP passive address in the FTP configuration matches the VM IP address.
 
 ### Login does not work
 
@@ -424,4 +611,11 @@ Enter the NGINX container:
 
 ```bash
 docker exec -it nginx bash
+```
+
+Check Docker Compose v2 directly:
+
+```bash
+docker compose -f srcs/docker-compose.yml ps
+docker compose -f srcs/docker-compose.yml logs -f
 ```
