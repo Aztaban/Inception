@@ -22,6 +22,25 @@ The project also includes optional bonus services. These services are separate f
 
 ---
 
+## Table of content
+
+1. [Prerequisites](#prerequisites)
+2. [Services](#services)
+3. [Bonus services](#bonus-services)
+4. [Starting the project](#starting-the-project)
+5. [Stoping the project](#stopping-the-project)
+6. [Accessing the Website](#accessing-the-website)
+7. [Accessing the WordPress Admin Panel](#accessing-the-wordpress-admin-panel)
+8. [Credentials](#credentials)
+9. [Persistent Data](#persistent-data)
+10. [Checking Service Status](#checking-service-status)
+11. [Viewing Logs](#viewing-logs)
+12. [Basic Troubleshooting](#basic-troubleshooting)
+13. [Useful Commands](#useful-commands)
+
+
+---
+
 ## Prerequisites
 
 Before running the project, install Make, Curl, Docker, and Docker Compose v2:
@@ -84,7 +103,9 @@ MariaDB stores the WordPress database.
 
 It is not publicly exposed. WordPress connects to MariaDB through the private Docker network.
 
-### BONUS Redis  
+## Bonus services
+
+### Redis  
 
 Redis is an in-memory data store used as a caching service for WordPress. It helps reduce repeated database queries by storing frequently requested objects in memory, which can improve the performance and responsiveness of the website.
 
@@ -94,7 +115,7 @@ Redis is an internal service. It does not need to expose a public port because W
 redis
 ```
 
-### BONUS Adminer  
+### Adminer  
 
 Adminer is a lightweight database management tool. It provides a web interface for inspecting and managing the MariaDB database, making it easier to check WordPress tables, users, and persisted data during development and administration.
 
@@ -123,7 +144,7 @@ Database: MYSQL_DATABASE from srcs/.env
 
 The server must be `mariadb`, not `localhost`, because Adminer connects to MariaDB through the Docker network.
 
-### BONUS FTP  
+### FTP  
 
 The FTP service provides file access to the WordPress website volume. It allows an administrator to upload, download, or inspect WordPress files without entering the container directly.
 
@@ -145,7 +166,7 @@ Password: password from secrets/ftp_password.txt
 
 The FTP service points to the WordPress website files volume.
 
-### BONUS Static Website
+### Static Website
 The static website is an additional independent web service served from its own container. It can be used as a simple portfolio, project presentation page, or landing page, and demonstrates how the infrastructure can host more than one type of web application.
 
 It is available at:
@@ -160,7 +181,7 @@ If accessing from the host machine while Docker runs inside a VM, use:
 http://<VM_IP_ADDRESS>:8081
 ```
 
-### BONUS Glances
+### Glances
 
 Glances is a lightweight monitoring service. It provides a web interface for checking system resource usage such as CPU, memory, disk, network, and processes.
 
