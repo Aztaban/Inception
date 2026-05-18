@@ -1,11 +1,12 @@
 COMPOSE_FILE = srcs/docker-compose.yml
 LOGIN = mjusta
+DATA_DIR = /home/$(LOGIN)/data
 
 all: up
 
 up:
-	mkdir -p /home/$(LOGIN)/data/mariadb
-	mkdir -p /home/$(LOGIN)/data/wordpress
+	sudo mkdir -p $(DATA_DIR)/mariadb
+	sudo mkdir -p $(DATA_DIR)/wordpress
 	docker compose -f $(COMPOSE_FILE) up --build -d
 
 down:
@@ -28,12 +29,12 @@ ps:
 clean:
 	docker compose -f $(COMPOSE_FILE) down --volumes --remove-orphans
 
-fclean: clean
+fclean:
+	docker compose -f $(COMPOSE_FILE) down --rmi all --volumes --remove-orphans
 	docker system prune -af
-	sudo rm -rf /home/$(LOGIN)/data/mariadb
-	sudo rm -rf /home/$(LOGIN)/data/wordpress
+	sudo rm -rf $(DATA_DIR)/mariadb
+	sudo rm -rf $(DATA_DIR)/wordpress
 
 re: fclean all
 
 .PHONY: all up down stop start restart logs ps clean fclean re
-
