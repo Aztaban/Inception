@@ -17,7 +17,7 @@ fi
 echo "Creating FTP user: ${FTP_USER}"
 
 if ! id "${FTP_USER}" >/dev/null 2>&1; then
-    useradd -m -d /var/www/html -s /user/sbin/nologin "${FTP_USER}"
+    useradd -m -d /var/www/html -s /usr/sbin/nologin "${FTP_USER}"
 fi
 
 echo "${FTP_USER}:${FTP_PASSWORD}" | chpasswd
