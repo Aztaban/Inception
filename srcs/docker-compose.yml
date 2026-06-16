@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
 
   ftp:
-    container_name: ftp;
+    container_name: ftp
     build:
       context: ./requirements/bonus/ftp
       dockerfile: Dockerfile

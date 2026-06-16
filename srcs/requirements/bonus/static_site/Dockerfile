@@ -6,7 +6,7 @@ RUN apt update && apt install -y \
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY html/ /var/www/static_site/
-COPY tools/init_static_site.sh /usr/local/bin/init_static.sh
+COPY tools/init_static_site.sh /usr/local/bin/init_static_site.sh
 
 RUN chmod +x /usr/local/bin/init_static_site.sh \
 	&& chown -R www-data:www-data /var/www/static_site
