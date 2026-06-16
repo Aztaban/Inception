@@ -16,17 +16,8 @@ done
 
 echo "MariaDB is ready"
 
-echo "Checking wp-cli..."
-
-if ! command -v wp >/dev/null 2>&1; then
-	echo "Installing wp-cli..."
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x wp-cli.phar
-	mv wp-cli.phar /usr/local/bin/wp
-fi
-
 if [ ! -f "wp-config.php" ]; then
-	echo "Downloading Wordpress..."
+	echo "Downloading WordPress..."
 
 	curl -o wordpress.tar.gz https://wordpress.org/latest.tar.gz
 	tar -xzf wordpress.tar.gz --strip-components=1
@@ -41,7 +32,7 @@ if [ ! -f "wp-config.php" ]; then
 	sed -i "s/password_here/${DB_PASSWORD}/" wp-config.php
 	sed -i "s/localhost/mariadb/" wp-config.php
 
-	echo "Installing Wordpress..."
+	echo "Installing WordPress..."
 
 	wp core install \
 		--allow-root \
@@ -52,7 +43,7 @@ if [ ! -f "wp-config.php" ]; then
 		--admin_password="${WP_ADMIN_PASSWORD}" \
 		--admin_email="${WP_ADMIN_EMAIL}"
 
-	echo "Creating normal wordpress user..."
+	echo "Creating normal WordPress user..."
 
 	wp user create \
 		"${WP_USER}" \
@@ -62,24 +53,44 @@ if [ ! -f "wp-config.php" ]; then
 		--user_pass="${WP_USER_PASSWORD}" \
 		--role=author
 
-	echo "Wordpress installation complete."
+	echo "WordPress installation complete."
 else
-	echo "Wordpress already installed."
+	echo "WordPress already installed."
 fi
 
 echo "Configuring Redis cache..."
 
-wp config set WP_REDIS_HOST redis --type=constant --allow-root --path=/var/www/html
-wp config set WP_REDIS_PORT 6379 --type=constant --raw --allow-root --path=/var/www/html
-wp config set WP_CACHE true --type=constant --raw --allow-root --path=/var/www/html
+wp config set WP_REDIS_HOST redis \
+	--type=constant \
+	--allow-root \
+	--path=/var/www/html
+
+wp config set WP_REDIS_PORT 6379 \
+	--type=constant \
+	--raw \
+	--allow-root \
+	--path=/var/www/html
+
+wp config set WP_CACHE true \
+	--type=constant \
+	--raw \
+	--allow-root \
+	--path=/var/www/html
 
 echo "Installing/enabling Redis Object Cache plugin..."
 
 if ! wp plugin is-installed redis-cache --allow-root --path=/var/www/html; then
-	wp plugin install redis-cache --activate --allow-root --path=/var/www/html
+	wp plugin install redis-cache \
+		--activate \
+		--allow-root \
+		--path=/var/www/html
 else
-	wp plugin activate redis-cache --allow-root --path=/var/www/html
+	wp plugin activate redis-cache \
+		--allow-root \
+		--path=/var/www/html
 fi
+
+echo "Enabling Redis object cache..."
 
 wp redis enable --allow-root --path=/var/www/html || true
 
@@ -89,4 +100,5 @@ echo "Redis status:"
 wp redis status --allow-root --path=/var/www/html || true
 
 echo "Starting php-fpm..."
+
 exec php-fpm8.2 -F
